@@ -26956,6 +26956,8 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = __webpack_require__(82);
@@ -26983,20 +26985,48 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var MainComponent = function (_Component) {
     _inherits(MainComponent, _Component);
 
-    function MainComponent() {
+    function MainComponent(props) {
         _classCallCheck(this, MainComponent);
 
-        return _possibleConstructorReturn(this, (MainComponent.__proto__ || Object.getPrototypeOf(MainComponent)).apply(this, arguments));
+        var _this = _possibleConstructorReturn(this, (MainComponent.__proto__ || Object.getPrototypeOf(MainComponent)).call(this, props));
+
+        _this.state = {
+            username: '',
+            error: false
+        };
+        return _this;
     }
 
     _createClass(MainComponent, [{
+        key: 'handleUsernameChange',
+        value: function handleUsernameChange(event) {
+            this.setState({ username: event.target.value });
+            if (/^[a-z]+$/.test(document.getElementById('username').value)) {
+                this.setState({ error: false });
+            } else {
+                this.setState({ error: true });
+            }
+        }
+    }, {
+        key: 'handleSubmitUsername',
+        value: function handleSubmitUsername() {
+            if (!this.state.error) {
+                showLoadingIcon("show-loading", true);
+            }
+        }
+    }, {
         key: 'render',
         value: function render() {
+            var _this2 = this;
+
+            console.log(this.state);
             return _react2.default.createElement(
                 'div',
                 null,
                 _react2.default.createElement(_reactRouterDom.Route, { path: '/', component: _header2.default }),
-                _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _getInfo2.default })
+                _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', render: function render(props) {
+                        return _react2.default.createElement(_getInfo2.default, _extends({}, props, { usernameChange: _this2.handleUsernameChange.bind(_this2), submitUsername: _this2.handleSubmitUsername.bind(_this2), error: _this2.state.error }));
+                    } })
             );
         }
     }]);
@@ -65003,6 +65033,8 @@ var _react = __webpack_require__(82);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _semanticUiReact = __webpack_require__(588);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -65014,19 +65046,92 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var GetInfo = function (_Component) {
     _inherits(GetInfo, _Component);
 
-    function GetInfo() {
+    function GetInfo(props) {
         _classCallCheck(this, GetInfo);
 
-        return _possibleConstructorReturn(this, (GetInfo.__proto__ || Object.getPrototypeOf(GetInfo)).apply(this, arguments));
+        var _this = _possibleConstructorReturn(this, (GetInfo.__proto__ || Object.getPrototypeOf(GetInfo)).call(this, props));
+
+        _this.state = {
+            modalOpen: true
+        };
+        return _this;
     }
 
     _createClass(GetInfo, [{
+        key: 'handleClose',
+        value: function handleClose() {
+            this.setState({ modalOpen: false });
+        }
+    }, {
+        key: 'stopLoading',
+        value: function stopLoading() {
+            showLoadingIcon("show-loading", false);
+        }
+    }, {
         key: 'render',
         value: function render() {
             return _react2.default.createElement(
                 'div',
-                null,
-                'THis is working'
+                { className: 'ask' },
+                _react2.default.createElement(
+                    _semanticUiReact.Modal,
+                    {
+                        open: this.state.modalOpen,
+                        basic: true,
+                        size: 'small'
+                    },
+                    _react2.default.createElement(_semanticUiReact.Header, { icon: 'browser', content: 'Welcome to CodeMode\'s Typing Test' }),
+                    _react2.default.createElement(
+                        _semanticUiReact.Modal.Content,
+                        null,
+                        _react2.default.createElement(
+                            'h3',
+                            null,
+                            'Test your typing speed, by playing 1 minute or 5 minute random text/stories games. ',
+                            _react2.default.createElement('br', null),
+                            ' Be a part of our daily leaderboard to get noticed!'
+                        )
+                    ),
+                    _react2.default.createElement(
+                        _semanticUiReact.Modal.Actions,
+                        null,
+                        _react2.default.createElement(
+                            _semanticUiReact.Button,
+                            { color: 'green', onClick: this.handleClose.bind(this), inverted: true },
+                            _react2.default.createElement(_semanticUiReact.Icon, { name: 'checkmark' }),
+                            ' Got it'
+                        )
+                    )
+                ),
+                _react2.default.createElement(
+                    _semanticUiReact.Form,
+                    { size: 'massive' },
+                    _react2.default.createElement(
+                        _semanticUiReact.Form.Group,
+                        { widths: 'equal' },
+                        _react2.default.createElement(_semanticUiReact.Form.Field, { id: 'username', onChange: this.props.usernameChange.bind(this), label: 'First name', control: 'input', placeholder: 'Your Name' })
+                    ),
+                    _react2.default.createElement(
+                        _semanticUiReact.Button,
+                        { animated: 'fade', fluid: true, color: 'teal', onClick: this.props.submitUsername.bind(this), id: 'show-loading' },
+                        _react2.default.createElement(
+                            _semanticUiReact.Button.Content,
+                            { visible: true },
+                            'Start Racing'
+                        ),
+                        _react2.default.createElement(
+                            _semanticUiReact.Button.Content,
+                            { hidden: true },
+                            'Start your awesome journey of Typing!'
+                        )
+                    ),
+                    _react2.default.createElement(_semanticUiReact.Divider, { hidden: true })
+                ),
+                this.props.error == true ? _react2.default.createElement(_semanticUiReact.Message, {
+                    error: true,
+                    header: 'There was some errors with your username. Please try again.',
+                    list: ['You should only include lower case letters in your name.', 'Your username cannot contain any special characters like - @ , . / % & $ etc...', "Your username cannot contain any number"]
+                }) : ""
             );
         }
     }]);

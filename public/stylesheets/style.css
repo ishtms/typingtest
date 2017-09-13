@@ -3,10 +3,16 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 .heading{
-  margin-top: 20px;
-  position: relative;
+  margin-top: 31px;
+  position: fixed;
   margin-left: 50%;
-  transform: translateX(-30%)
+  transform: translateX(-50%)
+}
+.ask{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%)
 }
 a {
   color: #00B7FF;
