@@ -1,16 +1,14 @@
 import React, {Component} from 'react'
 import {Route, Link} from 'react-router-dom';
-import { Header, Icon } from 'semantic-ui-react';
-
+import Heading from './header.js'
+import GetInfo from './get-info.js'
 export default class MainComponent extends Component{
     render(){
         return (
-            <Header as='h2'>
-                <Icon name='settings' />
-                <Header.Content>
-                    TypeRacer - CodeMode
-                </Header.Content>
-            </Header>
+            <div>
+            <Route path="/" component = {Heading} />
+            <Route exact path="/" component = {GetInfo} />
+            </div>
         );
     }
 }
