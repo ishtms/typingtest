@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
 import { Button, Divider, Message, Form, Modal, Icon, Header } from 'semantic-ui-react'
+import {Link} from 'react-router-dom';
 
 export default  class GetInfo extends Component{
+    componentDidUpdate(){
+        var StateObj = Object.assign({}, this.state);
+        if(StateObj.validated != this.props.validated){
+            this.setState({validated: this.props.validated})
+        }
+    }
     constructor(props){
         super(props);
         this.state = {
-            modalOpen: true
+            modalOpen: true,
+            validated: false
         }
     }
     handleClose(){
@@ -38,7 +46,7 @@ export default  class GetInfo extends Component{
                         <Form.Field id="username" onChange={this.props.usernameChange.bind(this)} label='Please enter your name' control='input' placeholder='Your Name' />
                     </Form.Group>
                     
-                    <Button animated='fade' fluid color='teal' onClick={this.props.submitUsername.bind(this)} id="show-loading">
+                   <Link to={(this.state.validated)?"/test":"/"}> <Button animated='fade' fluid color='teal' onClick={this.props.submitUsername.bind(this)} id="show-loading">
                         <Button.Content visible>
                             Start Racing
                         </Button.Content>
@@ -46,6 +54,7 @@ export default  class GetInfo extends Component{
                             Start your awesome journey of Typing!
                         </Button.Content>
                     </Button>
+                    </Link>
                     <Divider hidden />
                 </Form>
                 {this.props.error == true ?<Message
@@ -54,7 +63,8 @@ export default  class GetInfo extends Component{
                     list={[
                       'You should only include lower case letters in your name.',
                       'Your username cannot contain any special characters like - @ , . / % & $ etc...',
-                      "Your username cannot contain any number"
+                      "Your username cannot contain any number",
+                      "Your username should be atleast 8 characters long!"
                     ]}
                   />: ""}
             </div>

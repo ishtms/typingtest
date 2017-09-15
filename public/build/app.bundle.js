@@ -45797,6 +45797,10 @@ var _getInfo = __webpack_require__(914);
 
 var _getInfo2 = _interopRequireDefault(_getInfo);
 
+var _typingTest = __webpack_require__(915);
+
+var _typingTest2 = _interopRequireDefault(_typingTest);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -45815,7 +45819,8 @@ var MainComponent = function (_Component) {
 
         _this.state = {
             username: '',
-            error: false
+            error: false,
+            validated: false
         };
         return _this;
     }
@@ -45823,11 +45828,16 @@ var MainComponent = function (_Component) {
     _createClass(MainComponent, [{
         key: 'handleUsernameChange',
         value: function handleUsernameChange(event) {
-            this.setState({ username: event.target.value });
-            if (/^[a-z]+$/.test(document.getElementById('username').value)) {
-                this.setState({ error: false });
+            var StateObj = Object.assign({}, this.state);
+            StateObj.username = event.target.value;
+            if (/^[a-z]+$/.test(document.getElementById('username').value) && StateObj.username.length > 7) {
+                StateObj.error = false;
+                StateObj.validated = true;
+                this.setState(StateObj);
             } else {
-                this.setState({ error: true });
+                StateObj.error = true;
+                StateObj.validated = false;
+                this.setState(StateObj);
             }
         }
     }, {
@@ -45842,13 +45852,15 @@ var MainComponent = function (_Component) {
         value: function render() {
             var _this2 = this;
 
-            console.log(this.state);
             return _react2.default.createElement(
                 'div',
                 null,
                 _react2.default.createElement(_reactRouterDom.Route, { path: '/', component: _header2.default }),
-                _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', render: function render(props) {
-                        return _react2.default.createElement(_getInfo2.default, _extends({}, props, { usernameChange: _this2.handleUsernameChange.bind(_this2), submitUsername: _this2.handleSubmitUsername.bind(_this2), error: _this2.state.error }));
+                _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', validated: this.state.validated, render: function render(props) {
+                        return _react2.default.createElement(_getInfo2.default, _extends({}, props, { validated: _this2.state.validated, usernameChange: _this2.handleUsernameChange.bind(_this2), submitUsername: _this2.handleSubmitUsername.bind(_this2), error: _this2.state.error }));
+                    } }),
+                _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/test', render: function render(props) {
+                        return _react2.default.createElement(_typingTest2.default, props);
                     } })
             );
         }
@@ -65034,6 +65046,8 @@ var _react2 = _interopRequireDefault(_react);
 
 var _semanticUiReact = __webpack_require__(290);
 
+var _reactRouterDom = __webpack_require__(282);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -65045,13 +65059,24 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var GetInfo = function (_Component) {
     _inherits(GetInfo, _Component);
 
+    _createClass(GetInfo, [{
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate() {
+            var StateObj = Object.assign({}, this.state);
+            if (StateObj.validated != this.props.validated) {
+                this.setState({ validated: this.props.validated });
+            }
+        }
+    }]);
+
     function GetInfo(props) {
         _classCallCheck(this, GetInfo);
 
         var _this = _possibleConstructorReturn(this, (GetInfo.__proto__ || Object.getPrototypeOf(GetInfo)).call(this, props));
 
         _this.state = {
-            modalOpen: true
+            modalOpen: true,
+            validated: false
         };
         return _this;
     }
@@ -65111,17 +65136,22 @@ var GetInfo = function (_Component) {
                         _react2.default.createElement(_semanticUiReact.Form.Field, { id: 'username', onChange: this.props.usernameChange.bind(this), label: 'Please enter your name', control: 'input', placeholder: 'Your Name' })
                     ),
                     _react2.default.createElement(
-                        _semanticUiReact.Button,
-                        { animated: 'fade', fluid: true, color: 'teal', onClick: this.props.submitUsername.bind(this), id: 'show-loading' },
+                        _reactRouterDom.Link,
+                        { to: this.state.validated ? "/test" : "/" },
+                        ' ',
                         _react2.default.createElement(
-                            _semanticUiReact.Button.Content,
-                            { visible: true },
-                            'Start Racing'
-                        ),
-                        _react2.default.createElement(
-                            _semanticUiReact.Button.Content,
-                            { hidden: true },
-                            'Start your awesome journey of Typing!'
+                            _semanticUiReact.Button,
+                            { animated: 'fade', fluid: true, color: 'teal', onClick: this.props.submitUsername.bind(this), id: 'show-loading' },
+                            _react2.default.createElement(
+                                _semanticUiReact.Button.Content,
+                                { visible: true },
+                                'Start Racing'
+                            ),
+                            _react2.default.createElement(
+                                _semanticUiReact.Button.Content,
+                                { hidden: true },
+                                'Start your awesome journey of Typing!'
+                            )
                         )
                     ),
                     _react2.default.createElement(_semanticUiReact.Divider, { hidden: true })
@@ -65129,7 +65159,7 @@ var GetInfo = function (_Component) {
                 this.props.error == true ? _react2.default.createElement(_semanticUiReact.Message, {
                     error: true,
                     header: 'There was some errors with your username. Please try again.',
-                    list: ['You should only include lower case letters in your name.', 'Your username cannot contain any special characters like - @ , . / % & $ etc...', "Your username cannot contain any number"]
+                    list: ['You should only include lower case letters in your name.', 'Your username cannot contain any special characters like - @ , . / % & $ etc...', "Your username cannot contain any number", "Your username should be atleast 8 characters long!"]
                 }) : ""
             );
         }
@@ -65139,6 +65169,12 @@ var GetInfo = function (_Component) {
 }(_react.Component);
 
 exports.default = GetInfo;
+
+/***/ }),
+/* 915 */
+/***/ (function(module, exports) {
+
+throw new Error("Module build failed: SyntaxError: D:/fullstack/typeracer/src/components/typing-test.js: Unexpected token (7:8)\n\n\u001b[0m \u001b[90m 5 | \u001b[39m        \u001b[36mreturn\u001b[39m (\n \u001b[90m 6 | \u001b[39m            \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 7 | \u001b[39m        )\u001b[33m;\u001b[39m\n \u001b[90m   | \u001b[39m        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 8 | \u001b[39m    }\n \u001b[90m 9 | \u001b[39m}\u001b[0m\n");
 
 /***/ })
 /******/ ]);

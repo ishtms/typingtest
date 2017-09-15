@@ -1,32 +1,43 @@
 import React, {Component} from 'react'
-import {Route, Link} from 'react-router-dom';
+import {Route, Link, Redirect} from 'react-router-dom';
 import Heading from './header.js'
 import GetInfo from './get-info.js'
+import TypingTest from './typing-test.js';
+
+
 export default class MainComponent extends Component{
     constructor(props){
         super(props);
         this.state = {
             username : '',
-            error: false
+            error: false,
+            validated: false
         }
     }
     handleUsernameChange(event){
-        this.setState({username : event.target.value})
-        if(/^[a-z]+$/.test(document.getElementById('username').value)){
-            this.setState({error: false})
+        var StateObj = Object.assign({},this.state);
+        StateObj.username = event.target.value;
+        if(/^[a-z]+$/.test(document.getElementById('username').value) && StateObj.username.length > 7){
+                StateObj.error = false;
+                StateObj.validated = true;
+                this.setState(StateObj);
         }else{
-            this.setState({error: true});
+            StateObj.error = true;
+            StateObj.validated = false;
+            this.setState(StateObj);
         }
     }
     handleSubmitUsername(){
-        if(!this.state.error) {showLoadingIcon("show-loading",true);}
+        if(!this.state.error) {
+            showLoadingIcon("show-loading",true);
+        }     
     }
     render(){
-        console.log(this.state)
         return (
             <div>
             <Route path="/" component = {Heading} />
-            <Route exact path="/" render = {(props)=><GetInfo {...props} usernameChange={this.handleUsernameChange.bind(this)} submitUsername={this.handleSubmitUsername.bind(this)} error={this.state.error} />} />
+            <Route exact path="/" validated={this.state.validated} render = {(props)=><GetInfo {...props} validated={this.state.validated}  usernameChange={this.handleUsernameChange.bind(this)} submitUsername={this.handleSubmitUsername.bind(this)} error={this.state.error} />} />
+            <Route exact path = "/test" render = {(props)=>{ return <TypingTest {...props}/>}}/>
             </div>
         );
     }
