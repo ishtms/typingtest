@@ -35,7 +35,7 @@ export default  class GetInfo extends Component{
           </Modal>
                 <Form size="massive">
                     <Form.Group widths='equal'>
-                        <Form.Field id="username" onChange={this.props.usernameChange.bind(this)} label='First name' control='input' placeholder='Your Name' />
+                        <Form.Field id="username" onChange={this.props.usernameChange.bind(this)} label='Please enter your name' control='input' placeholder='Your Name' />
                     </Form.Group>
                     
                     <Button animated='fade' fluid color='teal' onClick={this.props.submitUsername.bind(this)} id="show-loading">
